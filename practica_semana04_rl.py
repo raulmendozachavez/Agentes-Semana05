@@ -1,6 +1,6 @@
 """
 Práctica de Laboratorio - Semana 04: Q-Learning en entorno estocástico
-y experimento de Reward Shaping (Gridworld 4x4 tipo FrozenLake slippery).
+y experimento de Reward Shaping
 """
 import random
 from typing import List, Tuple

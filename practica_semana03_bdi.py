@@ -1,13 +1,10 @@
 """
-Práctica de Laboratorio - Semana 03: Agente deliberativo BDI (SRE)
-Intérprete de Wooldridge: brf -> options -> filter -> plan -> ejecución.
+Práctica de Laboratorio - Semana 03: Agente deliberativo BDI
 """
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional, Callable
 
-# ---------------------------------------------------------------------------
 # Constantes de diseño (se definen fuera de las funciones para poder ajustarlas)
-# ---------------------------------------------------------------------------
 UMBRAL_CPU_CRITICO = 80.0     # CPU crítica (%)
 UMBRAL_TASA_FUGA = 15.0       # incremento mínimo de CPU por ciclo (puntos %)
 UMBRAL_LATENCIA_MS = 500.0    # latencia a partir de la cual el SLA está en riesgo
@@ -52,9 +49,7 @@ class AgenteBDI_Estudiante:
         self.plan_activo: Optional[PlanBDI] = None
         self.cola_acciones: List[str] = []
 
-    # -----------------------------------------------------------------------
     # TAREA 1: brf (revisión de creencias) con inferencia deductiva
-    # -----------------------------------------------------------------------
     def brf(self, p: TelemetriaCluster) -> None:
         """Actualiza creencias y deriva 'anomalia_fuga_memoria'."""
         # Ventana deslizante: solo se conservan las últimas 3 lecturas
@@ -84,9 +79,7 @@ class AgenteBDI_Estudiante:
             # Con menos de 3 lecturas no hay evidencia suficiente
             self.creencias["anomalia_fuga_memoria"] = False
 
-    # -----------------------------------------------------------------------
     # TAREA 2: options (generación de deseos)
-    # -----------------------------------------------------------------------
     def options(self) -> Dict[str, Deseo]:
         """Genera el conjunto de deseos D según las creencias actuales."""
         c = self.creencias
@@ -107,9 +100,7 @@ class AgenteBDI_Estudiante:
 
         return opciones
 
-    # -----------------------------------------------------------------------
     # TAREA 3: filter (selección de la intención)
-    # -----------------------------------------------------------------------
     def filter(self, opciones: Dict[str, Deseo]) -> Optional[Deseo]:
         """Compromiso de mente abierta: se reevalúa en cada ciclo y se elige
         el deseo de mayor prioridad."""
@@ -117,9 +108,7 @@ class AgenteBDI_Estudiante:
             return None
         return max(opciones.values(), key=lambda d: d.prioridad)
 
-    # -----------------------------------------------------------------------
     # TAREA 4: selección de plan con soporte de Fallback
-    # -----------------------------------------------------------------------
     def seleccionar_plan_fallback(self, intencion: Deseo,
                                   biblioteca: List[PlanBDI]) -> Optional[PlanBDI]:
         """Devuelve el primer plan de la biblioteca que sirva para la
@@ -134,9 +123,7 @@ class AgenteBDI_Estudiante:
                 return plan
         return None
 
-    # -----------------------------------------------------------------------
     # Ciclo de control completo del agente
-    # -----------------------------------------------------------------------
     def ejecutar_ciclo(self, p: TelemetriaCluster, biblioteca: List[PlanBDI]) -> None:
         self.brf(p)
         nueva = self.filter(self.options())
